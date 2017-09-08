@@ -1,23 +1,24 @@
 use reqwest;
+use std::io::Read;
 
 pub struct SlackClient {
-    api_url: String,
+    url: String,
     token: String,
 }
 
 impl SlackClient {
     pub fn new(api: String, token: String) -> SlackClient {
         SlackClient {
-            api_url: api,
-            api_token: token,
+            url: api,
+            token: token,
         }
     }
 
     pub fn invite(&self, email: String) -> String {
-        let url = reqwest::Url::parse(&self.api_url[..]).expect("Api url is invalid");
+        let url = reqwest::Url::parse(&self.url[..]).expect("Api url is invalid");
         let params = [
             ("email", email.as_ref()),
-            ("token", api_token.as_ref()),
+            ("token", self.token.as_ref()),
             ("set_active", "true"),
         ];
 
@@ -27,7 +28,10 @@ impl SlackClient {
                         .send().unwrap();
 
         let mut content = String::new();
-        res.read_to_string(&mut content);
+        match res.read_to_string(&mut content) {
+            Err(err) => println!("Error {}", err),
+            _ => ()
+        }
 
         content
     }
