@@ -1,0 +1,11 @@
+{
+  "name": "rust-slack-inviter",
+  "description": "Rust Slack Inviter server",
+  "repository": "https://github.com/cristianoliveira/rust-slack-inviter",
+  "success_url": "/",
+  "keywords": ["rust", "iron"],
+  "website": "http://www.cristianoliveira.com",
+  "env": {
+    "BUILDPACK_URL": "https://github.com/emk/heroku-buildpack-rust.git"
+  }
+}
