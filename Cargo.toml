@@ -1,0 +1,17 @@
+[package]
+name = "slack-inviter"
+version = "0.1.0"
+authors = ["Cristian Oliveira <contato@cristianoliveira.com.br>"]
+
+[[bin]]
+name = "slack-inviter"
+
+[dependencies]
+iron = "0.5.*"
+staticfile = "*"
+reqwest = "0.7.3"
+dotenv = "0.10.1"
+serde_json = "1.0"
+
+[dependencies.mount]
+git = "https://github.com/iron/mount.git"

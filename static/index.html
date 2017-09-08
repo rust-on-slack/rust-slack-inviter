@@ -1,0 +1,68 @@
+<html class="gr__rust-slack_herokuapp_com">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Join the The Rust Programming Language  community on Slack!</title>
+      <link href="css/style.css" rel="stylesheet" type="text/css">
+      <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,900,700italic|Open+Sans:700italic,400,600,300,700,800" rel="stylesheet" type="text/css">
+   </head>
+   <body data-gr-c-s-loaded="true">
+      <div id="wrapper">
+         <div class="main">
+            <div class="header">
+               <h1><strong>The Rust Programming Language </strong></h1>
+               <h2>Enter your email below to join The Rust Programming Language  on Slack!</h2>
+            </div>
+            <div class="content">
+               <div class="information">
+                 <form method="POST" action="/invite" id="join-form" class="form">
+                   <input type="email" name="email" autofocus="" placeholder="Your Email" id="slack-email" class="field">
+                   <input type="submit" value="Join" class="submit">
+                 </form>
+                 <strong id="error"></strong>
+                 <strong id="message"></strong>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script>
+        var message = document.getElementById('message');
+        var error = document.getElementById('error');
+        var form = document.getElementById('join-form');
+        var email = document.getElementById('slack-email');
+
+        form.addEventListener('submit', function(evt) {
+          evt.preventDefault();
+          if (!email.value) {
+            return
+          }
+
+          var data = JSON.stringify({ email: email.value });
+          var request = new Request(
+            '/invite',
+            { method: 'POST', cache: 'default', body: data }
+          );
+
+          fetch(request)
+            .then(res => res.json())
+            .then(function(res) {
+              if (!res.ok) {
+                if (res.error === 'already_invited' || res.error === 'already_in_team') {
+                  error.innerText = 'Success! You were already invited using this same email.';
+                } else if (res.error === 'invalid_email') {
+                  error.innerText = 'The email you entered is an invalid email.';
+                } else if (res.error === 'invalid_auth') {
+                  error.innerText = 'Something has gone wrong.' +
+                     ' Please open an issue on https://github.com/cristianoliveira/rust-slack-inviter using this keyword: ' + res.error;
+                }
+
+                return
+              }
+
+              message.innerText = "Your invite has been successfuly requested. Please check your email."
+          });
+        });
+      </script>
+   </body>
+   <div></div>
+</html>
