@@ -1,1 +1,1 @@
-web: ./target/release/server
+web: ./target/release/slack-inviter
