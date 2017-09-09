@@ -2,6 +2,10 @@
 
 This is the repo for https://rust-slack.herokuapp.com
 
+This app was made to facilitate the access into the Rust Lang slack team.
+
+https://rust-lang.slack.com
+
 ## Running
 ```bash
 cargo run
