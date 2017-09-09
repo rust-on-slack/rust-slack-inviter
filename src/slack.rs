@@ -14,8 +14,7 @@ impl SlackClient {
         }
     }
 
-    pub fn invite(&self, email: String) -> String {
-        let url = reqwest::Url::parse(&self.url[..]).expect("Api url is invalid");
+    pub fn invite(&self, email: &str) -> String {
         let params = [
             ("email", email.as_ref()),
             ("token", self.token.as_ref()),
@@ -23,7 +22,7 @@ impl SlackClient {
         ];
 
         let client = reqwest::Client::new().unwrap();
-        let mut res = client.post(url).unwrap()
+        let mut res = client.post(self.endpoint("/api/users.admin.invite")).unwrap()
                         .form(&params).unwrap()
                         .send().unwrap();
 
@@ -34,5 +33,12 @@ impl SlackClient {
         }
 
         content
+    }
+
+    fn endpoint(&self, uri: &str) -> reqwest::Url {
+        let url = String::from(self.url.clone() + uri);
+
+        reqwest::Url::parse(&url[..])
+            .expect("Api url is invalid")
     }
 }

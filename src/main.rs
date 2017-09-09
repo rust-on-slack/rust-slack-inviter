@@ -27,11 +27,32 @@ use settings::Settings;
 
 fn handle_invite(client: &SlackClient, req: &mut Request) -> IronResult<Response> {
     let mut payload = String::new();
-    let _ = req.body.read_to_string(&mut payload).unwrap();
+    match req.body.read_to_string(&mut payload) {
+        Ok(_) => (),
+        Err(err) => println!("Error {}", err)
+    }
 
-    let v: Value = serde_json::from_str(&payload[..]).unwrap();
+    println!("payload {:?}", payload);
+    let v: Value = match serde_json::from_str(&payload[..]) {
+        Ok(val) => val,
+        Err(err) => {
+            println!("Error {}", err);
+            Value::Null
+        }
+    };
 
-    let response = client.invite(v["email"].to_string());
+    let response = match v {
+        Value::Object(params) =>
+            match params.get("email") {
+                Some(email) =>
+                    client.invite(email.as_str().unwrap()),
+                None =>
+                    String::from("{ \"ok\": false, \"error\": \"invalid_email\" }"),
+            },
+        _ =>
+            String::from("{ \"ok\": false, \"error\": \"application_error\" }"),
+    };
+
     Ok(Response::with((status::Ok, response)))
 }
 
