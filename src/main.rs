@@ -32,7 +32,6 @@ fn handle_invite(client: &SlackClient, req: &mut Request) -> IronResult<Response
         Err(err) => println!("Error {}", err)
     }
 
-    println!("payload {:?}", payload);
     let v: Value = match serde_json::from_str(&payload[..]) {
         Ok(val) => val,
         Err(err) => {
