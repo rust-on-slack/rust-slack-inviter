@@ -4,6 +4,7 @@ extern crate staticfile;
 extern crate reqwest;
 extern crate dotenv;
 extern crate serde_json;
+extern crate serde;
 #[macro_use] extern crate serde_derive;
 
 mod settings;
@@ -50,13 +51,16 @@ fn handle_invite(client: &SlackClient, req: &mut Request) -> IronResult<IronResp
                 Some(email) =>
                     client.invite(email.as_str().unwrap()),
                 None =>
-                    serde_json::to_string(Response::new(false, Some(ErrorType::InvalidEmail))),
+                    serde_json::to_string(&Response::new(false, Some(ErrorType::InvalidEmail)))
+                        .expect("Failed to construct error JSON"), // FIXME: IronResult doesn't have an impl of From for serde_json::Error
+                        // FIXME: Consider using error_chain to add custom error type that impls from for both types, if possible?
             },
         _ =>
-            serde_json::to_string(Response::new(false, Some(ErrorType::ApplicationError))),
+            serde_json::to_string(&Response::new(false, Some(ErrorType::ApplicationError)))
+                .expect("Failed to construct error JSON"),
     };
 
-    Ok(Response::with((status::Ok, response)))
+    Ok(IronResponse::with((status::Ok, response)))
 }
 
 fn main() {
