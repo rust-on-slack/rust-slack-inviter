@@ -4,9 +4,14 @@ extern crate staticfile;
 extern crate reqwest;
 extern crate dotenv;
 extern crate serde_json;
+extern crate serde;
+#[macro_use] extern crate serde_derive;
 
 mod settings;
 mod slack;
+mod response;
+
+use response::{Response, ErrorType};
 
 use std::io::Read;
 
@@ -16,7 +21,7 @@ use std::path::Path;
 
 use mount::Mount;
 use staticfile::Static;
-use iron::{Iron, Request, Response, IronResult};
+use iron::{Iron, Request, Response as IronResponse, IronResult};
 use iron::status;
 use std::str::FromStr;
 
@@ -25,7 +30,7 @@ use serde_json::{Value};
 use slack::SlackClient;
 use settings::Settings;
 
-fn handle_invite(client: &SlackClient, req: &mut Request) -> IronResult<Response> {
+fn handle_invite(client: &SlackClient, req: &mut Request) -> IronResult<IronResponse> {
     let mut payload = String::new();
     match req.body.read_to_string(&mut payload) {
         Ok(_) => (),
@@ -46,13 +51,16 @@ fn handle_invite(client: &SlackClient, req: &mut Request) -> IronResult<Response
                 Some(email) =>
                     client.invite(email.as_str().unwrap()),
                 None =>
-                    String::from("{ \"ok\": false, \"error\": \"invalid_email\" }"),
+                    serde_json::to_string(&Response::new(false, Some(ErrorType::InvalidEmail)))
+                        .expect("Failed to construct error JSON"), // FIXME: IronResult doesn't have an impl of From for serde_json::Error
+                        // FIXME: Consider using error_chain to add custom error type that impls from for both types, if possible?
             },
         _ =>
-            String::from("{ \"ok\": false, \"error\": \"application_error\" }"),
+            serde_json::to_string(&Response::new(false, Some(ErrorType::ApplicationError)))
+                .expect("Failed to construct error JSON"),
     };
 
-    Ok(Response::with((status::Ok, response)))
+    Ok(IronResponse::with((status::Ok, response)))
 }
 
 fn main() {
