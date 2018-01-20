@@ -33,11 +33,10 @@ html,body{
 
 
 .header{
-  color: #2a6496;
+  color: #428BCA;
   margin-top: 140px;
   margin-bottom: 40px;
 }
-
 
 h1{
   font-family: 'Open Sans', sans-serif;
@@ -54,6 +53,7 @@ h1 strong{
 }
 
 h2{
+  color: #000000;
   text-align: center;
   font-weight: 300;
   font-size: 20px;
@@ -90,7 +90,7 @@ h3{
 
 .field{
   /* background: url(../images/field.png) repeat; */
-  background-color: #2a6496;
+  background-color: #428BCA;
   width: 448px;
   -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;
   border: none;
