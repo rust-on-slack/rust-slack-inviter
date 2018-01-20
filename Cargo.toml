@@ -7,7 +7,7 @@ authors = ["Cristian Oliveira <contato@cristianoliveira.com.br>"]
 name = "slack-inviter"
 
 [dependencies]
-iron = "0.5.*"
+iron = "*"
 staticfile = "*"
 reqwest = "0.7.3"
 dotenv = "0.10.1"
